@@ -2,7 +2,7 @@
 import streamlit as st
 import openai
 
-openai.api_key = "" # Replace with your OpenAI API key
+openai.api_key = API_KEY # Replace with your OpenAI API key
 
 def ask_question(question, model_engine, prompt):
     response = openai.Completion.create(
