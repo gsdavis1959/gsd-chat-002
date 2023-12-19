@@ -19,7 +19,7 @@ def ask_question(question, model_engine, prompt):
 
 def main():
     st.title("Chatbot")
-    model_engine = "text-davinci-003" # Replace with the name of the OpenAI model you want to use
+    model_engine = "gpt-3.5-turbo-instruct" # Replace with the name of the OpenAI model you want to use
     prompt = "User: {}\nBot:"
     question = st.text_input("You: ")
     if question:
