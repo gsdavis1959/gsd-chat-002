@@ -31,6 +31,7 @@ def main():
 
     if st.button("Clear Chat History"):
         st.session_state.messages.clear()
+        st.clear_cache()
         st.session_state["messages"] = [{"role": "assistant", "content": "Hi there. Can I help you?"}]
 
 
