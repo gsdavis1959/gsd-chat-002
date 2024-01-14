@@ -26,5 +26,10 @@ def main():
         answer = ask_question(question, model_engine, prompt)
         st.write("Bot:", answer)
 
+    if st.button("Clear Chat History"):
+        st.session_state.messages.clear()
+        st.session_state["messages"] = [{"role": "assistant", "content": "Hi there. Can I help you?"}]
+
+
 if __name__ == "__main__":
     main()
