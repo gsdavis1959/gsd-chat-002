@@ -5,6 +5,9 @@ import os
 
 openai.api_key = os.getenv('API_KEY') # Replace with your OpenAI API key
 
+if "messages" not in st.session_state:
+    st.session_state.messages = []
+    
 def ask_question(question, model_engine, prompt):
     response = openai.Completion.create(
         engine=model_engine,
