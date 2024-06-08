@@ -5,38 +5,49 @@ import os
 
 openai.api_key = os.getenv('API_KEY') # Replace with your OpenAI API key
 
-if "messages" not in st.session_state:
+
+st.title("Simple GPT-4 Chatbot")
+
+# Initialize session state variables
+if 'messages' not in st.session_state:
     st.session_state.messages = []
 
-def generate_response(prompt):
+# Function to call the OpenAI API
+def get_gpt4_response(messages):
     try:
-        response = openai.Completion.create(
-            engine="gpt-4",
-            prompt=prompt,
-            max_tokens=150
+        response = openai.ChatCompletion.create(
+            model="gpt-4",  # Ensure you are using the correct model name
+            messages=messages,
+            max_tokens=150,
+            n=1,
+            stop=None,
+            temperature=0.7,
         )
-        return response.choices[0].text.strip()
+        message = response.choices[0].message['content'].strip()
+        return message
     except Exception as e:
-        return f"Error: {e}"
+        st.error(f"Error: {e}")
+        return "Sorry, I couldn't process your request."
 
-# Display previous messages
-if st.session_state.messages:
-    for msg in st.session_state.messages:
-        if msg["user"]:
-            st.write(f"You: {msg['content']}")
-        else:
-            st.write(f"GPT-4: {msg['content']}")
+# Function to handle user input
+def handle_input(user_input):
+    st.session_state.messages.append({"role": "user", "content": user_input})
+    gpt4_response = get_gpt4_response(st.session_state.messages)
+    st.session_state.messages.append({"role": "assistant", "content": gpt4_response})
 
-# Text input for the user's message
-user_input = st.text_input("You: ", "")
+# User input
+user_input = st.text_input("You:", key="input")
 
 if st.button("Send"):
     if user_input:
-        # Save user's message
-        st.session_state.messages.append({"user": True, "content": user_input})
-        
-        # Generate GPT-4 response
-        gpt_response = generate_response(user_input)
+        handle_input(user_input)
+
+# Display chat history
+for message in st.session_state.messages:
+    if message["role"] == "user":
+        st.write(f"**You:** {message['content']}")
+    else:
+        st.write(f"**Bot:** {message['content']}")
         
         # Save GPT-4's response
         st.session_state.messages.append({"user": False, "content": gpt_response})
