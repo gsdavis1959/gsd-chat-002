@@ -7,33 +7,39 @@ openai.api_key = os.getenv('API_KEY') # Replace with your OpenAI API key
 
 if "messages" not in st.session_state:
     st.session_state.messages = []
-    
-def ask_question(question, model_engine, prompt):
-    response = openai.chat.completions.create(
-        engine=model_engine,
-        prompt=prompt.format(question),
-        max_tokens=1024,
-        n=1,
-        stop=None,
-        temperature=0.7,
-    )
-    answer = response.choices[0].text.strip()
-    return answer
 
-def main():
-    st.title("Chatbot")
-    model_engine = "gpt-4o" # Replace with the name of the OpenAI model you want to use
-    prompt = "User: {}\nBot:"
-    question = st.text_input("You: ")
-    if question:
-        answer = ask_question(question, model_engine, prompt)
-        st.write("Bot:", answer)
+def generate_response(prompt):
+    try:
+        response = openai.Completion.create(
+            engine="gpt-4",
+            prompt=prompt,
+            max_tokens=150
+        )
+        return response.choices[0].text.strip()
+    except Exception as e:
+        return f"Error: {e}"
 
-    if st.button("Clear Chat History"):
-        st.session_state.messages.clear()
-        st.runtime.legacy_caching.clear_cache()
-        st.session_state["messages"] = [{"role": "assistant", "content": "Hi there. Can I help you?"}]
+# Display previous messages
+if st.session_state.messages:
+    for msg in st.session_state.messages:
+        if msg["user"]:
+            st.write(f"You: {msg['content']}")
+        else:
+            st.write(f"GPT-4: {msg['content']}")
 
+# Text input for the user's message
+user_input = st.text_input("You: ", "")
 
-if __name__ == "__main__":
-    main()
+if st.button("Send"):
+    if user_input:
+        # Save user's message
+        st.session_state.messages.append({"user": True, "content": user_input})
+        
+        # Generate GPT-4 response
+        gpt_response = generate_response(user_input)
+        
+        # Save GPT-4's response
+        st.session_state.messages.append({"user": False, "content": gpt_response})
+        
+        # Display the response
+        st.write(f"GPT-4: {gpt_response}")
