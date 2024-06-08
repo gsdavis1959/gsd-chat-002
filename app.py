@@ -9,7 +9,7 @@ if "messages" not in st.session_state:
     st.session_state.messages = []
     
 def ask_question(question, model_engine, prompt):
-    response = openai.Completion.create(
+    response = openai.ChatCompletion.create(
         engine=model_engine,
         prompt=prompt.format(question),
         max_tokens=1024,
