@@ -23,7 +23,7 @@ def get_gpt4_response(messages):
             stop=None,
             temperature=0.7,
         )
-        message = response.choices[0].message['content'].strip()
+        message = response['choices'][0]['message']['content'].strip()
         return message
     except Exception as e:
         st.error(f"Error: {e}")
@@ -48,9 +48,3 @@ for message in st.session_state.messages:
         st.write(f"**You:** {message['content']}")
     else:
         st.write(f"**Bot:** {message['content']}")
-        
-        # Save GPT-4's response
-        st.session_state.messages.append({"user": False, "content": gpt_response})
-        
-        # Display the response
-        st.write(f"GPT-4: {gpt_response}")
