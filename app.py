@@ -9,7 +9,7 @@ if "messages" not in st.session_state:
     st.session_state.messages = []
     
 def ask_question(question, model_engine, prompt):
-    response = openai.ChatCompletion.create(
+    response = openai.Completion.create(
         engine=model_engine,
         prompt=prompt.format(question),
         max_tokens=1024,
@@ -22,7 +22,7 @@ def ask_question(question, model_engine, prompt):
 
 def main():
     st.title("Chatbot")
-    model_engine = "gpt-3.5-turbo" # Replace with the name of the OpenAI model you want to use
+    model_engine = "text-davinci-003" # Replace with the name of the OpenAI model you want to use
     prompt = "User: {}\nBot:"
     question = st.text_input("You: ")
     if question:
